@@ -1,6 +1,6 @@
 {
   "name": "inotifywait",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Yet another nodejs fs.watch/inotify implementation. Good for big directories structures and lot of files.",
   "main": "index.js",
   "scripts": {
