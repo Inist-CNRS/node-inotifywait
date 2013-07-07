@@ -24,6 +24,8 @@ Are not performant for huge number of directories and files watching. Some are n
 npm install inotifywait
 ```
 
+Prerequisit is to have the ''inotifywait'' command in the current PATH. On debian/ubuntu, you have to ''sudo apt-get install inotify-tools''
+
 ### Example
 
 ```js
