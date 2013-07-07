@@ -29,15 +29,15 @@ Prerequisit is to have the ''inotifywait'' command in the current PATH. On debia
 ### Example
 
 ```js
-var inw = require('inotifywait');
+var INotifyWait = require('inotifywait');
 
-var watch1 = inw.watch('/tmp/', { recursive: false });
+var watch1 = new INotifyWait('/tmp/', { recursive: false });
 watch1.on('add', function (filename) {
   console.log(filename + ' added');
   watch1.close(); // stop watching
 });
 
-var watch2 = inw.watch('/var/log/', { recursive: true });
+var watch2 = new INotifyWait('/var/log/', { recursive: true });
 watch2.on('change', function (filename) {
   console.log(filename + ' changed');
   watch2.close(); // stop watching

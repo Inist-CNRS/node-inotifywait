@@ -1,9 +1,9 @@
-var expect = require('chai').expect;
-var iws    = require('../index.js');
-var uuid   = require('uuid');
-var fs     = require('fs');
-var mkdirp = require('mkdirp');
-var remove = require('remove');
+var expect      = require('chai').expect;
+var INotifyWait = require('../index.js');
+var uuid        = require('uuid');
+var fs          = require('fs');
+var mkdirp      = require('mkdirp');
+var remove      = require('remove');
 
 var fakeFile = '';
 before(function(){
@@ -11,45 +11,43 @@ before(function(){
 });
 
 describe('inotifywait', function () {
-  describe('.watch()', function () {
-    it('should detect when a new file is added', function (done) {
-      var f = '';
-      setTimeout(function () {
-        f = generateFakeFile('fake2');
-      }, 10);
-      var w = iws.watch(__dirname + '/data');
-      w.on('add', function (filename) {
-        expect(filename).to.eql(f);
-        w.close();
-        done();
-      });
+  it('should detect when a new file is added', function (done) {
+    var f = '';
+    setTimeout(function () {
+      f = generateFakeFile('fake2');
+    }, 10);
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('add', function (filename) {
+      expect(filename).to.eql(f);
+      w.close();
+      done();
     });
+  });
 
-    it('should detect when a file is modified', function (done) {
-      setTimeout(function () {
-        fs.writeFileSync(fakeFile, '...');
-      }, 10);
-      var w = iws.watch(__dirname + '/data');
-      w.on('change', function (filename) {
-        expect(filename).to.eql(fakeFile);
-        w.close();
-        done();
-      });
-    })
-
-    it('should detect when a file is removed', function (done) {
-      setTimeout(function () {
-        remove.removeSync(fakeFile);
-      }, 10);
-      var w = iws.watch(__dirname + '/data');
-      w.on('unlink', function (filename) {
-        expect(filename).to.eql(fakeFile);
-        w.close();
-        done();
-      });
-    })
-
+  it('should detect when a file is modified', function (done) {
+    setTimeout(function () {
+      fs.writeFileSync(fakeFile, '...');
+    }, 10);
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('change', function (filename) {
+      expect(filename).to.eql(fakeFile);
+      w.close();
+      done();
+    });
   })
+
+  it('should detect when a file is removed', function (done) {
+    setTimeout(function () {
+      remove.removeSync(fakeFile);
+    }, 10);
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('unlink', function (filename) {
+      expect(filename).to.eql(fakeFile);
+      w.close();
+      done();
+    });
+  })
+
 });
 
 after(function(){
