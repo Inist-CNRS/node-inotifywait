@@ -32,6 +32,9 @@ Prerequisit is to have the `inotifywait` command in the current PATH. On debian/
 var INotifyWait = require('inotifywait');
 
 var watch1 = new INotifyWait('/tmp/', { recursive: false });
+watch1.on('ready', function (filename) {
+  console.log('watcher is watching');
+});
 watch1.on('add', function (filename) {
   console.log(filename + ' added');
   watch1.close(); // stop watching

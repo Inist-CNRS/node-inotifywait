@@ -11,6 +11,14 @@ before(function(){
 });
 
 describe('inotifywait', function () {
+  it('should tell when it is ready', function (done) {
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('ready', function () {
+      w.close();
+      done();
+    });
+  });
+
   it('should detect when a new file is added', function (done) {
     var f = '';
     setTimeout(function () {
