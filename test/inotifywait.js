@@ -11,7 +11,8 @@ before(function(){
 });
 
 describe('inotifywait', function () {
-  it('should tell when it is ready', function (done) {
+
+  it('should tell when it is ready @1', function (done) {
     var w = new INotifyWait(__dirname + '/data');
     w.on('ready', function () {
       w.close();
@@ -19,42 +20,96 @@ describe('inotifywait', function () {
     });
   });
 
-  it('should detect when a new file is added', function (done) {
+  it('should detect when a new file is added @2', function (done) {
     var f = '';
-    setTimeout(function () {
-      f = generateFakeFile('fake2');
-    }, 10);
     var w = new INotifyWait(__dirname + '/data');
-    w.on('add', function (filename) {
-      expect(filename).to.eql(f);
+    w.on('add', function (name) {
+      expect(name).to.eql(f);
       w.close();
       done();
+    });
+    w.on('ready', function () {
+      f = generateFakeFile('fake2');
     });
   });
 
-  it('should detect when a file is modified', function (done) {
-    setTimeout(function () {
-      fs.writeFileSync(fakeFile, '...');
-    }, 10);
+  it('should detect when a file is modified @3', function (done) {
     var w = new INotifyWait(__dirname + '/data');
-    w.on('change', function (filename) {
-      expect(filename).to.eql(fakeFile);
+    w.on('change', function (name) {
+      expect(name).to.eql(fakeFile);
       w.close();
       done();
+    });
+    w.on('ready', function () {
+      fs.writeFileSync(fakeFile, '...');
     });
   })
 
-  it('should detect when a file is removed', function (done) {
-    setTimeout(function () {
-      remove.removeSync(fakeFile);
-    }, 10);
+  it('should detect when a file is removed @4', function (done) {
     var w = new INotifyWait(__dirname + '/data');
-    w.on('unlink', function (filename) {
-      expect(filename).to.eql(fakeFile);
+    w.on('unlink', function (name) {
+      expect(name).to.eql(fakeFile);
       w.close();
       done();
     });
+    w.on('ready', function () {
+      remove.removeSync(fakeFile);
+    });
   })
+
+  it('should detect when a folder is created @5', function (done) {
+    var d = __dirname + '/data/lol';
+    var w = new INotifyWait(__dirname + '/data', { watchDirectory: true });
+    w.on('add', function (name) {
+      expect(name).to.eql(d);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      mkdirp.sync(d);
+    });
+  })
+
+  it('should not detect when a folder is created if watchDirectory is false @6',
+  function (done) {
+    var d        = __dirname + '/data/lol2';
+    var addEvent = false;
+
+    var w = new INotifyWait(__dirname + '/data', { watchDirectory: false });
+    w.on('add', function (name) {
+      addEvent = true;
+    });
+    w.on('ready', function () {
+      mkdirp.sync(d);
+      // test the add event is not handled for directory creation
+      setTimeout(function () {
+        expect(addEvent).to.be.false; 
+        w.close();
+        done();
+      }, 100);
+    });
+  })
+
+  it('should detect a new file in a new folder if recursive is true @7',
+  function (done) {
+    var d        = __dirname + '/data/lol3';
+    var f        = __dirname + '/data/lol3/newfile';
+
+    var w = new INotifyWait(__dirname + '/data', { recursive: true });
+    w.on('add', function (name) {
+      //console.log(name);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      mkdirp.sync(d);
+      // wait few milliseconds before writing a file
+      // so inotifywait can scan the new folder
+      setTimeout(function () {
+        fs.writeFileSync(f, '...');
+      }, 10);
+    });
+  })  
 
 });
 
