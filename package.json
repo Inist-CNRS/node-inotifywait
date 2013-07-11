@@ -23,14 +23,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kerphi/node-inotifywatch.git"
+    "url": "https://github.com/kerphi/node-inotifywait.git"
   },
   "keywords": [
     "watch",
     "inotify",
+    "inotifywait",
     "inotifywatch"
   ],
   "bugs": {
-    "url": "https://github.com/kerphi/node-inotifywatch/issues"
+    "url": "https://github.com/kerphi/node-inotifywait/issues"
   }
 }
