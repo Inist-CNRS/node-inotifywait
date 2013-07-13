@@ -107,9 +107,31 @@ describe('inotifywait', function () {
       // so inotifywait can scan the new folder
       setTimeout(function () {
         fs.writeFileSync(f, '...');
-      }, 10);
+      }, 0);
     });
   })  
+
+  it('should detect a new file in nested new folders if recursive is true @8',
+  function (done) {
+    var d        = __dirname + '/data/lol4/lol5';
+    var f        = __dirname + '/data/lol4/lol5/newfile';
+
+    var w = new INotifyWait(__dirname + '/data', { recursive: true });
+    w.on('add', function (name) {
+      //console.log(name);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      mkdirp.sync(d);
+      // wait few milliseconds before writing a file
+      // so inotifywait can scan the new folder
+      setTimeout(function () {
+        fs.writeFileSync(f, '...');
+      }, 0);
+    });
+  });
+
 
 });
 
