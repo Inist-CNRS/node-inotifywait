@@ -14,7 +14,8 @@ describe('inotifywait', function () {
 
   it('should tell when it is ready @1', function (done) {
     var w = new INotifyWait(__dirname + '/data');
-    w.on('ready', function () {
+    w.on('ready', function (p) {
+      expect(p.pid, 'when inotifywait is ready, it should have a pid').to.be.numeric;
       w.close();
       done();
     });
