@@ -133,6 +133,18 @@ describe('inotifywait', function () {
     });
   });
 
+  it('should receive a close event when inotifywait process is killed @9',
+  function (done) {
+    var w = new INotifyWait(__dirname + '/data', { recursive: false });
+    w.on('ready', function () {
+      setTimeout(function () {
+        w.close();
+      }, 10);
+    });
+    w.on('close', function () {
+	  done();
+    });
+  });
 
 });
 
