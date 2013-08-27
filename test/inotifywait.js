@@ -7,6 +7,7 @@ var uuid        = require('uuid');
 var fs          = require('fs');
 var mkdirp      = require('mkdirp');
 var remove      = require('remove');
+var touch       = require('touch');
 
 var fakeFile = '';
 before(function(){
@@ -145,7 +146,7 @@ describe('inotifywait', function () {
       }, 10);
     });
     w.on('close', function () {
-	  done();
+	    done();
     });
   });
 
@@ -161,6 +162,56 @@ describe('inotifywait', function () {
 	  done();
     });
   });  
+
+  it('should detect when a new symlink is added @11', function (done) {
+    var f_id  = uuid.v1();
+    var f_src = '/tmp/' + f_id;
+    var f_dst = __dirname + '/data/' + f_id;
+    fs.writeFileSync(f_src, 'fake data'); // create the file source
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('add', function (name) {
+      expect(name).to.eql(f_dst);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      fs.symlinkSync(f_src, f_dst);
+    });
+  });
+
+  it('should detect when a new hardlink is added @12', function (done) {
+    var f_id  = uuid.v1();
+    var f_src = '/tmp/' + f_id;
+    var f_dst = __dirname + '/data/' + f_id;
+    fs.writeFileSync(f_src, 'fake data'); // create the file source
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('add', function (name) {
+      expect(name).to.eql(f_dst);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      fs.linkSync(f_src, f_dst);
+    });
+  });
+
+  it('should detect when a new hardlink is touched @13', function (done) {
+    var f_id  = uuid.v1();
+    var f_src = '/tmp/' + f_id;
+    var f_dst = __dirname + '/data/' + f_id;
+    //    console.log(f_dst);
+    fs.writeFileSync(f_src, 'fake data'); // create the file source
+    fs.linkSync(f_src, f_dst);            // create the hard link
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('change', function (name) {
+      expect(name).to.eql(f_dst);
+      w.close();
+      done();
+    });
+    w.on('ready', function () {
+      touch.sync(f_dst); // touch the hard link
+    });
+  });
 
 });
 
