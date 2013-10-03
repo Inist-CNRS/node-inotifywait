@@ -213,6 +213,37 @@ describe('inotifywait', function () {
     });
   });
 
+  it('should detect 500 files change when they are touched @14', function (done) {
+    
+    // create the 100 files
+    remove.removeSync(__dirname + '/data');
+    var files = [];
+    for (var i = 0; i < 500 ; i++) {
+      var id  = uuid.v4();
+      var path = __dirname + '/data/' + id[0] + '/' + id[1] + '/' + id[2];
+      mkdirp.sync(path);
+      var file = path + '/' + id;
+      fs.writeFileSync(file, '.');
+      files.push(file);
+    }
+
+    // run inotifywait
+    var nbNotify = 0;
+    var w = new INotifyWait(__dirname + '/data');
+    w.on('change', function (name) {
+      nbNotify++;
+      if (nbNotify == 500) {
+        done();
+      }
+    });
+    w.on('ready', function () {
+      files.forEach(function (f) {
+        touch.sync(f);
+      });
+    });
+  });
+
+
 });
 
 after(function(){
