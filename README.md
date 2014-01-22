@@ -57,3 +57,8 @@ watch2.on('change', function (filename) {
   watch2.close(); // stop watching
 });
 ``` 
+
+### Contributors
+
+* [Stéphane Gully](https://github.com/kerphi)
+* [Friedel Ziegelmayer](https://github.com/Dignifiedquire)
