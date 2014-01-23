@@ -11,6 +11,7 @@ var touch       = require('touch');
 
 var fakeFile = '';
 before(function(){
+  remove.removeSync(__dirname + '/data');
   fakeFile = generateFakeFile('fake1');
 });
 
