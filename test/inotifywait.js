@@ -11,6 +11,7 @@ var touch       = require('touch');
 
 var fakeFile = '';
 before(function(){
+  remove.removeSync(__dirname + '/data');
   fakeFile = generateFakeFile('fake1');
 });
 
@@ -28,9 +29,11 @@ describe('inotifywait', function () {
   it('should detect when a new file is added @2', function (done) {
     var f = '';
     var w = new INotifyWait(__dirname + '/data');
-    w.on('add', function (name, isDir) {
+    w.on('add', function (name, stats) {
       expect(name).to.eql(f);
-      expect(isDir).to.eql(false);
+      expect(stats.isDir).to.eql(false);
+      expect(stats.date).to.be.a('Date');
+      expect(stats.date).to.be.lt(new Date());
       w.close();
       done();
     });
@@ -53,9 +56,9 @@ describe('inotifywait', function () {
 
   it('should detect when a file is removed @4', function (done) {
     var w = new INotifyWait(__dirname + '/data');
-    w.on('unlink', function (name, isDir) {
+    w.on('unlink', function (name, stats) {
       expect(name).to.eql(fakeFile);
-      expect(isDir).to.eql(false);
+      expect(stats.isDir).to.eql(false);
       w.close();
       done();
     });
@@ -67,9 +70,9 @@ describe('inotifywait', function () {
   it('should detect when a folder is created @5', function (done) {
     var d = __dirname + '/data/lol';
     var w = new INotifyWait(__dirname + '/data', { watchDirectory: true });
-    w.on('add', function (name, isDir) {
+    w.on('add', function (name, stats) {
       expect(name).to.eql(d);
-      expect(isDir).to.eql(true);
+      expect(stats.isDir).to.eql(true);
       w.close();
       done();
     });
@@ -248,9 +251,9 @@ describe('inotifywait', function () {
   it('should detect when a folder is removed @14', function (done) {
     var d = __dirname + '/data/lol';
     var w = new INotifyWait(__dirname + '/data', { watchDirectory: true });
-    w.on('unlink', function (name, isDir) {
+    w.on('unlink', function (name, stats) {
       expect(name).to.eql(d);
-      expect(isDir).to.eql(true);
+      expect(stats.isDir).to.eql(true);
       w.close();
       done();
     });

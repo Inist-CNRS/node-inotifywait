@@ -28,14 +28,18 @@ Prerequisit is to have the `inotifywait` command in the current PATH. On debian/
 
 ### Events
 
-* add (p1 = filename, isDir): received when a file or directory is added
-* change (p1 = filename, isDir): received when a file is modified
-* unlink (p1 = filename, isDir): received when a file or directory is deleted
-* unknown (p1 = filename, p2 = full raw event object): received when unknown action is done on a file or directory
+* add (p1 = filename, stats): received when a file or directory is added
+* change (p1 = filename, stats): received when a file is modified
+* unlink (p1 = filename, stats): received when a file or directory is deleted
+* unknown (p1 = filename, p2 = full raw event object, stats): received when unknown action is done on a file or directory
 
 * ready (p1 = unix process object): received when inotifywait is ready to watch files or directories
 * close (no parameter): received when inotifywait exited
 * error (p1 = error object): received when an error occures
+
+`stats` has two properties, `isDir` a Boolean to specify if the event was on a file or a directory and `date` a Date object that
+holds the date of the occured event.
+```
 
 ### Example
 
