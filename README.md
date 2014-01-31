@@ -39,7 +39,7 @@ Prerequisit is to have the `inotifywait` command in the current PATH. On debian/
 
 `stats` has two properties, `isDir` a Boolean to specify if the event was on a file or a directory and `date` a Date object that
 holds the date of the occured event.
-```
+
 
 ### Example
 
