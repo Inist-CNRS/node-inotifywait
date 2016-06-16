@@ -1,0 +1,10 @@
+sudo: required
+language: node_js
+node_js:
+  - 4.4.5
+before_install:
+  # install inotifywait
+  - sudo apt-get update
+  - sudo apt-get install -o Dpkg::Options::="--force-confold" --force-yes -y inotify-tools
+notifications:
+  slack: 'inist-dpi:53Jp5iUZeRidSGZn0TukMSKo#activity'
