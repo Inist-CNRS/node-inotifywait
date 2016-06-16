@@ -60,9 +60,27 @@ watch2.on('change', function (filename) {
   console.log(filename + ' changed');
   watch2.close(); // stop watching
 });
+
+var watch3 = new Inotifywait("/my/dir", {
+            recursive: true, // recurse sub folders
+            excludes: ["\./\.git(.*)"], // exclusion regex patterns
+            files: [".gitignore"], // explicit file paths to ignore
+            events: ["create", "move", "delete"], // events to listen to
+            spawnArgs: {stdio: "inherit"}, // spawn args controlling bin spawning
+            bin: "/home/me/bin/inotifywait" // bin path
+        });
+watch3.on('change', function (filename) {
+  console.log(filename + ' changed');
+  watch3.close(); // stop watching
+});
+
+
 ``` 
+
+
 
 ### Contributors
 
 * [Stéphane Gully](https://github.com/kerphi)
 * [Friedel Ziegelmayer](https://github.com/Dignifiedquire)
+* [Stéphane Erard](https://github.com/stephaneerard)
