@@ -1,5 +1,7 @@
 # node-inotifywait
 
+[![Build Status](https://travis-ci.org/Inist-CNRS/node-inotifywait.svg?branch=master)](https://travis-ci.org/Inist-CNRS/node-inotifywait)
+
 Yet another nodejs fs.watch implementation that can watch:
 
 * folders recursively
